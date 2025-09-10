@@ -1,22 +1,80 @@
 # Open/Closed Principle (OCP)
 
-## Definition
+Kolla koden i bad-calculator och diskutera innan ni läser här.
 
-Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification.
+**Problemet**: Utvecklarna av systemet har valt att utröna vilken form som ska beräknas baserat på om det finns `base`, `height` eller `radius`. Om man nu lägger till en ny form så som triangel som också har `base` och `height` så kan detta skapa buggar.
+Utvecklarna har helt enkelt tänkt att det aldrig ska finnas fler former och därmed inte byggt systemet med Open-Closed-tänk från början
 
-## Key Points
+_SPOILERS NEDANFÖR_
 
-- You should be able to extend a class's behavior without modifying it
-- Use abstraction to allow different implementations
-- Achieve extensibility through inheritance, interfaces, and composition
-- Protects existing code from changes
+**En lösning**: Skapa ett interface `Shape` som beskriver att alla klasser som implementerar `Shape` så som `class Rectangle implements Shape` måste ha metoden `area()` på sig. På så sätt ansvarar varje form för sin egen area. Skapa klassen `AreaCalculator` med metoden `calculateArea` som tar in en `shape` och returnerar `shape.area()`.
 
-## Coming Soon
+På detta sätt får vi en lösning där vi fritt kan lägga till nya former utan att modifiera redan etablerad kod.
 
-TypeScript examples demonstrating good and bad practices for the Open/Closed Principle will be added here.
+```
+interface Shape {
+  area(): number;
+}
 
-## Benefits
+class AreaCalculator {
+  calculateArea(shape: Shape): number {
+    return shape.area();
+  }
+}
 
-1. **Reduced Risk**: Existing code doesn't need to be modified
-2. **Better Extensibility**: New functionality can be added easily
-3. **Improved Stability**: Less chance of introducing bugs in working code
+class Rectangle implements Shape {
+  constructor(private width: number, private height: number) {}
+
+  area(): number {
+    return this.width * this.height;
+  }
+}
+
+class Circle implements Shape {
+  constructor(private radius: number) {}
+
+  area(): number {
+    return Math.PI * this.radius * this.radius;
+  }
+}
+
+class Triangle implements Shape {
+  constructor(private base: number, private height: number) {}
+
+  area(): number {
+    return (this.base * this.height) / 2;
+  }
+}
+
+export { Shape, AreaCalculator, Rectangle, Circle, Triangle };
+
+```
+
+```
+import { AreaCalculator, Rectangle, Circle, Triangle } from "./good-calculator";
+
+describe("Open-Closed Principle - Good Implementation", () => {
+  let calculator: AreaCalculator;
+
+  beforeEach(() => {
+    calculator = new AreaCalculator();
+  });
+
+  describe("Basic shapes", () => {
+    test("rectangle calculation works correctly", () => {
+      const rectangle = new Rectangle(5, 10);
+      expect(calculator.calculateArea(rectangle)).toBe(50);
+    });
+
+    test("circle calculation works correctly", () => {
+      const circle = new Circle(3);
+      expect(calculator.calculateArea(circle)).toBeCloseTo(28.27, 2);
+    });
+
+    test("triangle calculation works correctly", () => {
+      const triangle = new Triangle(6, 8);
+      expect(calculator.calculateArea(triangle)).toBe(24);
+    });
+  });
+});
+```
