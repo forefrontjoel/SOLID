@@ -2,6 +2,8 @@
 
 Kolla koden i rental-apartments och diskutera innan ni läser här.
 
+Kör tester genom npm test -- src/L-liskov-substitution/rental-apartments.test.ts
+
 **Principen**: Objekt av en superklass ska kunna ersättas med objekt av en subklass utan att förändra programmets korrekthet. Med andra ord, subklasser ska vara utbytbara med sin superklass.
 
 **Exemplet**: I vårt rental-apartments exempel har vi en grundklass `RentalApartment` och två subklasser `LuxuryRentalApartment` och `BigRentalApartment`. Båda subklasserna ärver från `RentalApartment` och kan användas överallt där `RentalApartment` förväntas.

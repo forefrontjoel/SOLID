@@ -26,7 +26,7 @@ console.log("Rectangle Area:", calculator.calculateArea(rectangle));
 const circle = new Circle(3);
 console.log("Circle Area:", calculator.calculateArea(circle));
 
-// Uppgift!
+// Uppgift:
 // Lägg till en klass: Triangle
 // Lägg till i calculateArea så att dess area räknas ut
 // Skapa ett test som verifierar att det fungerar

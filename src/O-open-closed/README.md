@@ -2,6 +2,8 @@
 
 Kolla koden i bad-calculator och diskutera innan ni läser här.
 
+Kör tester genom npm test -- src/O-open-closed/bad-calculator.test.ts
+
 **Problemet**: Utvecklarna av systemet har valt att utröna vilken form som ska beräknas baserat på om det finns `base`, `height` eller `radius`. Om man nu lägger till en ny form så som triangel som också har `base` och `height` så kan detta skapa buggar.
 Utvecklarna har helt enkelt tänkt att det aldrig ska finnas fler former och därmed inte byggt systemet med Open-Closed-tänk från början
 
@@ -11,7 +13,7 @@ _SPOILERS NEDANFÖR_
 
 På detta sätt får vi en lösning där vi fritt kan lägga till nya former utan att modifiera redan etablerad kod.
 
-```
+```typescript
 interface Shape {
   area(): number;
 }
@@ -47,10 +49,9 @@ class Triangle implements Shape {
 }
 
 export { Shape, AreaCalculator, Rectangle, Circle, Triangle };
-
 ```
 
-```
+```typescript
 import { AreaCalculator, Rectangle, Circle, Triangle } from "./good-calculator";
 
 describe("Open-Closed Principle - Good Implementation", () => {

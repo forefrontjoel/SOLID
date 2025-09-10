@@ -2,6 +2,8 @@
 
 Kolla koden i bad-bird och diskutera innan ni läser här.
 
+Kör tester genom npm test -- src/L-liskov-substitution/bad-bird.test.ts
+
 **Problemet**: Utvecklarna har skapat en `Bird` klass som alla fåglar ärver från. Problemet är att inte alla fåglar kan flyga (t.ex. strutsar), men `Bird` klassen förutsätter att alla fåglar kan flyga genom `fly()` metoden. När vi försöker använda `Ostrich` där en `Bird` förväntas i `makeBirdFly` funktionen, så kastas ett exception och systemet kraschar.
 
 Detta bryter mot Liskov Substitution Principle som säger att objekt av en superklass ska kunna ersättas med objekt av en subklass utan att ändra programmets korrekthet.
