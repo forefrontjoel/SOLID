@@ -3,7 +3,6 @@ interface Vehicle {
   accelerate(): void;
   fly(): void; // Not all vehicles can fly!
   sail(): void; // Not all vehicles can sail!
-  honk(): void; // Some vehicles don't have horns
 }
 
 class Car implements Vehicle {
@@ -13,10 +12,6 @@ class Car implements Vehicle {
 
   accelerate(): void {
     console.log("Car accelerating");
-  }
-
-  honk(): void {
-    console.log("Car honking: Beep beep!");
   }
 
   // Forced to implement methods that don't make sense for a car
@@ -46,19 +41,11 @@ class Airplane implements Vehicle {
   sail(): void {
     throw new Error("Airplanes cannot sail!");
   }
-
-  honk(): void {
-    throw new Error("Airplanes don't honk!");
-  }
 }
 
 class Bicycle implements Vehicle {
   accelerate(): void {
     console.log("Bicycle pedaling faster");
-  }
-
-  honk(): void {
-    console.log("Bicycle bell: Ring ring!");
   }
 
   // Forced to implement methods that don't make sense for a bicycle

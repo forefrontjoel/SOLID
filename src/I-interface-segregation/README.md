@@ -2,7 +2,7 @@
 
 Kolla koden i bad-car och diskutera innan ni läser här.
 
-**Problemet**: Utvecklarna har skapat ett stort "Vehicle" interface som tvingar alla fordon att implementera metoder de inte behöver. En bil tvingas implementera `fly()`, `sail()` och `dive()` metoder som bara kastar fel. Detta bryter mot Interface Segregation Principle eftersom klienter (fordon) tvingas vara beroende av metoder de inte använder.
+**Problemet**: Utvecklarna har skapat ett stort "Vehicle" interface som tvingar alla fordon att implementera metoder de inte behöver. En bil tvingas implementera `fly()` och `sail()` metoder som bara kastar fel. Detta bryter mot Interface Segregation Principle eftersom klienter (fordon) tvingas vara beroende av metoder de inte använder.
 
 _SPOILERS NEDANFÖR_
 
@@ -33,23 +33,18 @@ interface Sailable {
   anchor(): void;
 }
 
-// För fordon som kan göra ljud
-interface Honkable {
-  honk(): void;
-}
-
 // Nu implementerar varje fordon bara de interfaces de faktiskt behöver
-class Car implements Movable, EngineOperated, Honkable {
+class Car implements Movable, EngineOperated {
   // Implementerar bara metoder som är relevanta för bilar
 }
 
-class Bicycle implements Movable, Honkable {
+class Bicycle implements Movable {
   // Implementerar bara metoder som är relevanta för cyklar
   // Ingen motor, ingen flygning
 }
 
 class Airplane implements Movable, EngineOperated, Flyable {
   // Implementerar bara metoder som är relevanta för flygplan
-  // Ingen tuta, ingen segling
+  // Ingen segling
 }
 ```

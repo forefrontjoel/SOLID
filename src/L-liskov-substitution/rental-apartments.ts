@@ -1,5 +1,3 @@
-// Ett exempel där vi kan visa varför det är bra när vi följer Liskov Substitution Principle
-
 class RentalApartment {
   type = "Basic";
   bathroom(): string {
@@ -32,7 +30,9 @@ class BigRentalApartment extends RentalApartment {
 
 function findApartments(apartments: any, type: string) {} // <-- Implementera denna funktion. Ändra typen any
 
-// Uppgift 1!
+// Detta exempel är ämnat att visa att LSP gör det enkelt att hantera sub och basklasser
+
+// Uppgift 1:
 // Du hyr ut lägenheter.
 // Dina användare söker efter lägenheter på din sida.
 
@@ -46,7 +46,7 @@ const example = ["katt", "hund", "fisk"]
 const onlyKatt = example.filter(word => word === "katt")
 */
 
-// Uppgift 2!
+// Uppgift 2:
 // Om den valda typen av lägenhet inte finns vill du marknadsföra dina andra typer av lägenheter.
 // Ändra findApartments så att den returnerar alla lägenheter som inte är av den valda typen om den valda typen inte finns.
 // (Detta är kanske inte en optimal sökfunktion i verkligheten men visar på smidigheten med att följa LSP)
