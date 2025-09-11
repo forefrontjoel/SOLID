@@ -64,10 +64,16 @@ class DocumentService {
   }
 }
 
-// Uppgift!
-// Testa att börja byta ut LocalFileStorage mot CloudStorage i DocumentService och se vad som behöver ändras.
+export { DocumentService, LocalFileStorage, CloudStorage, Document };
+
+// Uppgift 1
+// Testa att börja byta ut LocalFileStorage mot CloudStorage och se vad som behöver ändras I DocumentService.
+
+// Uppgift 2
 // Refaktorera koden så att den följer Dependency Inversion Principle så att det enklare går att byta ut LocalFileStorage mot CloudStorage.
 // Skapa abstraktioner (interfaces) som high-level moduler kan bero på.
 // Använd dependency injection för att injicera konkreta implementationer.
 
-export { DocumentService, LocalFileStorage, CloudStorage, Document };
+// Uppgift 3
+// Kolla i bad-storage.test.ts vilka problem i testen som kan uppstå om DIP inte följs.
+// Se om du kan få alla test att köra genom att ändra DocumentService att använda CloudStorage istället för LocalFileStorage.

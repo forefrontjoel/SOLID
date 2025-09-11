@@ -2,10 +2,10 @@
 
 Kolla koden i bad-storage och diskutera innan ni läser här.
 
-**Problemet**: `DocumentService` klassen är direkt kopplad till konkreta lagringsimplementationer (`LocalFileStorage` och `CloudStorage`). Detta skapar flera problem:
+**Problemet**: `DocumentService` klassen är direkt kopplad till konkreta lagringsimplementationer (`LocalFileStorage` och `CloudStorage`). I bad-storage-exemplet returnerar även funktionerna i de implementerade klasserna olika typer. Detta skapar flera problem:
 
 1. **Tight Coupling**: DocumentService kan inte fungera utan att veta exakt vilken storage som används
-2. **Svår testning**: Det är omöjligt att mocka storage för enhetstester
+2. **Svår testning**: Det är svårt att mocka storage för enhetstester
 3. **Svår utbytbarthet**: Att byta storage kräver ändringar i DocumentService klassen
 4. **Bryter mot Open/Closed Principle**: Vi måste modifiera befintlig kod för att lägga till nya storage-typer
 5. **Olika interfaces**: LocalFileStorage och CloudStorage har olika method-signaturer, return-typer och konstruktor-parametrar
@@ -138,5 +138,4 @@ const testDocumentService = new DocumentService(mockStorage);
 2. **Enkel testning**: Mocka interface istället för konkreta klasser
 3. **Flexibilitet**: Byt storage utan att ändra DocumentService
 4. **Standardiserat interface**: Alla storage-typer följer samma kontrakt
-5. **Följer SOLID**: Både DIP och OCP följs
-6. **Typ-säkerhet**: Interface garanterar att alla implementationer har samma metoder
+5. **Följer SOLID**: Följer även OCP vilket gör det enklare att lägga till nya typer av lagring
