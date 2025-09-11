@@ -1,22 +1,142 @@
 # Dependency Inversion Principle (DIP)
 
-## Definition
+Kolla koden i bad-storage och diskutera innan ni läser här.
 
-High-level modules should not depend on low-level modules. Both should depend on abstractions. Abstractions should not depend on details. Details should depend on abstractions.
+**Problemet**: `DocumentService` klassen är direkt kopplad till konkreta lagringsimplementationer (`LocalFileStorage` och `CloudStorage`). Detta skapar flera problem:
 
-## Key Points
+1. **Tight Coupling**: DocumentService kan inte fungera utan att veta exakt vilken storage som används
+2. **Svår testning**: Det är omöjligt att mocka storage för enhetstester
+3. **Svår utbytbarthet**: Att byta storage kräver ändringar i DocumentService klassen
+4. **Bryter mot Open/Closed Principle**: Vi måste modifiera befintlig kod för att lägga till nya storage-typer
+5. **Olika interfaces**: LocalFileStorage och CloudStorage har olika method-signaturer, return-typer och konstruktor-parametrar
 
-- Depend on abstractions, not concretions
-- Use dependency injection to provide implementations
-- Invert the direction of dependencies
-- High-level policy should not depend on low-level details
+Detta bryter mot Dependency Inversion Principle som säger att high-level moduler inte ska bero på low-level moduler. Båda ska bero på abstraktioner.
 
-## Coming Soon
+_SPOILERS NEDANFÖR_
 
-TypeScript examples demonstrating dependency injection and inversion of control will be added here.
+**En lösning**: Skapa ett interface som definierar lagringsoperationer och låt DocumentService bero på detta interface istället för konkreta implementationer. Använd dependency injection för att injicera rätt implementation.
 
-## Benefits
+```typescript
+// Abstraktion som både high-level och low-level moduler kan bero på
+interface Storage {
+  saveFile(filename: string, content: string): boolean;
+  getFile(filename: string): string | null;
+}
 
-1. **Reduced Coupling**: High-level modules are independent of low-level details
-2. **Better Testability**: Easy to mock dependencies for testing
-3. **Improved Flexibility**: Easy to swap implementations
+// High-level modul som nu beror på abstraktion
+class DocumentService {
+  private storage: Storage;
+
+  constructor(storage: Storage) {
+    this.storage = storage;
+  }
+
+  saveDocument(document: Document): void {
+    const filename = `${document.id}.txt`;
+    const content = `${document.title}\n\n${document.content}`;
+    const success = this.storage.saveFile(filename, content);
+    if (!success) {
+      throw new Error("Failed to save document");
+    }
+  }
+
+  getDocument(id: string): string | null {
+    const filename = `${id}.txt`;
+    return this.storage.getFile(filename);
+  }
+}
+
+// Low-level moduler implementerar abstraktionen
+class LocalFileStorage implements Storage {
+  private directory: string;
+
+  constructor(directory: string) {
+    this.directory = directory;
+  }
+
+  saveFile(filename: string, content: string): boolean {
+    const result = this.saveFileToLocal(filename, content);
+    return result.success;
+  }
+
+  getFile(filename: string): string | null {
+    return this.getFileFromLocal(filename);
+  }
+
+  private saveFileToLocal(
+    filename: string,
+    content: string
+  ): { success: boolean } {
+    console.log(`Saving file ${filename} to local directory ${this.directory}`);
+    return { success: true };
+  }
+
+  private getFileFromLocal(filename: string): string | null {
+    console.log(`Reading file ${filename} from ${this.directory}`);
+    return "This is the content of the file from local storage";
+  }
+}
+
+class CloudStorage implements Storage {
+  private bucketId: number;
+
+  constructor(bucketId: number) {
+    this.bucketId = bucketId;
+  }
+
+  saveFile(filename: string, content: string): boolean {
+    const result = this.saveFileToCloud(filename, content);
+    return result.url !== null;
+  }
+
+  getFile(filename: string): string | null {
+    const result = this.getFileFromCloud(filename);
+    return result.content;
+  }
+
+  private saveFileToCloud(filename: string, content: string): { url: string } {
+    console.log(`Uploading file ${filename} to cloud bucket ${this.bucketId}`);
+    return {
+      url: `https://storage.cloud.com/bucket-${this.bucketId}/${filename}`,
+    };
+  }
+
+  private getFileFromCloud(filename: string): { content: string } {
+    console.log(`Downloading file ${filename} from bucket ${this.bucketId}`);
+    return { content: "This is the content of the file from cloud storage" };
+  }
+}
+
+// Användning med dependency injection
+const localStorage = new LocalFileStorage("/documents");
+const documentService = new DocumentService(localStorage);
+
+// Eller med CloudStorage
+const cloudStorage = new CloudStorage(12345);
+const cloudDocumentService = new DocumentService(cloudStorage);
+
+// För testning kan vi enkelt mocka
+class MockStorage implements Storage {
+  saveFile(filename: string, content: string): boolean {
+    console.log(`Mock: Saving ${filename}`);
+    return true;
+  }
+
+  getFile(filename: string): string | null {
+    console.log(`Mock: Reading ${filename}`);
+    return "mock content";
+  }
+}
+
+const mockStorage = new MockStorage();
+const testDocumentService = new DocumentService(mockStorage);
+```
+
+## Fördelar med denna lösning:
+
+1. **Lös koppling**: DocumentService vet inte vilken storage som används
+2. **Enkel testning**: Mocka interface istället för konkreta klasser
+3. **Flexibilitet**: Byt storage utan att ändra DocumentService
+4. **Standardiserat interface**: Alla storage-typer följer samma kontrakt
+5. **Följer SOLID**: Både DIP och OCP följs
+6. **Typ-säkerhet**: Interface garanterar att alla implementationer har samma metoder
